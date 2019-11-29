@@ -6,44 +6,49 @@ import {
     Input,
     Label
 } from 'reactstrap';
-import { ApolloProvider, Query, useQuery } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const USER_QUERY = gql`
-    query {
-        login {
+const LOGIN_MUTATION = gql`
+    mutation login($email: String!, $password: String!) {
+        login (email: $email, password: $password) {
             email
             password
-            roles
+            role
+            token
         }
     }
 `;
 
-const login = gql`
-    mutation login($email: String!, $password: String!) {
-        login(email: $email, password: $password)
-    }
-`;
-
 function Login() {
-    const roles = useQuery(
-        USER_QUERY
-    );
-    console.log(roles);
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [loginUser, {data, error, loading}] = useMutation(LOGIN_MUTATION);
+
+    if (error) {
+        alert('Error Logging In User');
+    }
+
+    if (data) {
+        alert('Successfully Logged In');
+    }
 
     return(
-        <Form>
+        <Form onSubmit={e => {
+            e.preventDefault();
+            loginUser({ variables: { email, password } });
+        }}>
             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="exampleEmail" className="mr-sm-2">Email</Label>
                 <Input value={email} onchange={e => setEmail(e.target.value)} type="email" name="email" id="exampleEmail" placeholder="something@idk.cool" required />
             </FormGroup>
             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="examplePassword" className="mr-sm-2">Password</Label>
-                <Input value={password} onchange={e => setPassword(e.target.value)} type="password" name="password" id="examplePassword" placeholder="don't tell!" required />
+                <Input value={password} onchange={e => setPassword(e.target.value)} type="password" name="password" id="examplePassword" placeholder="password" required />
             </FormGroup>
-            <Button>Submit</Button>
+            <Button>Login</Button>
         </Form>
     );
 }
