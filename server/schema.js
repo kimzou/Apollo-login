@@ -4,11 +4,11 @@ module.exports = gql`
   type Query {
     login(email: String!, password: String!): User
   }
-  
+
   type User {
     email: String!
     password: String!
-    roles: Role!
+    role: Role!
   }
 
   enum Role {
