@@ -6,15 +6,12 @@ import {
     Input,
     Label
 } from 'reactstrap';
-import { useMutation } from 'react-apollo';
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 const LOGIN_MUTATION = gql`
     mutation login($email: String!, $password: String!) {
-        login (email: $email, password: $password) {
-            email
-            password
-            role
+        login(email: $email, password: $password) {
             token
         }
     }
@@ -25,30 +22,35 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [loginUser, {data, error, loading}] = useMutation(LOGIN_MUTATION);
+    const [loginUser, {loading, error, data}] = useMutation(LOGIN_MUTATION, {
+        onError(error) {
+            console.log('Error : ', error)
+        },
+        onCompleted(data) {
+            console.log('Completed :', data)
+        }
+    });
 
     if (error) {
-        alert('Error Logging In User');
-    }
-
-    if (data) {
-        alert('Successfully Logged In');
+        console.error(error);
     }
 
     return(
-        <Form onSubmit={e => {
+        <Form onSubmit={(e) => {
             e.preventDefault();
-            loginUser({ variables: { email, password } });
+            loginUser({ 
+                variables: { email, password }
+            });
         }}>
             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="exampleEmail" className="mr-sm-2">Email</Label>
-                <Input value={email} onchange={e => setEmail(e.target.value)} type="email" name="email" id="exampleEmail" placeholder="something@idk.cool" required />
+                <Input value={email} onChange={e => setEmail(e.target.value)} type="email" name="email" id="exampleEmail" placeholder="something@idk.cool" required />
             </FormGroup>
             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="examplePassword" className="mr-sm-2">Password</Label>
-                <Input value={password} onchange={e => setPassword(e.target.value)} type="password" name="password" id="examplePassword" placeholder="password" required />
+                <Input value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" id="examplePassword" placeholder="password" required />
             </FormGroup>
-            <Button>Login</Button>
+            <Button disabled={loading}>Login</Button>
         </Form>
     );
 }
