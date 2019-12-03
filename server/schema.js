@@ -4,7 +4,7 @@ module.exports = gql`
   type Query {
     me: User
   }
-  
+
   type Mutation {
     login(email: String!, password: String!): AuthPayload
   }
@@ -22,5 +22,6 @@ module.exports = gql`
   enum Role {
     ADMIN
     INSTRUCTOR
+    STUDENT
   }
 `

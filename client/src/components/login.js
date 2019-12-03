@@ -8,7 +8,6 @@ import {
 } from 'reactstrap';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { Redirect } from 'react-router-dom';
 
 const LOGIN_MUTATION = gql`
     mutation login($email: String!, $password: String!) {
@@ -22,11 +21,11 @@ function Login(props) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState('');
 
     const [loginUser, { loading, error, data }] = useMutation(LOGIN_MUTATION, {
         onError(error) {
             console.log('Error : ', error)
+            alert('Not authorized')
         },
         onCompleted(data) {
             if (data.login.token) {
