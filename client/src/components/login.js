@@ -8,6 +8,7 @@ import {
 } from 'reactstrap';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Cookies from 'js-cookie';
 
 const LOGIN_MUTATION = gql`
     mutation login($email: String!, $password: String!) {
@@ -29,7 +30,7 @@ function Login(props) {
         },
         onCompleted(data) {
             if (data.login.token) {
-                localStorage.setItem('token', data.login.token)
+                Cookies.set('token', data.login.token, { expires: data.login.tokenExpiration })
                 props.history.push('/')
             } else if (data.login.error) {
                 alert(data.login.error)
