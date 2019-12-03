@@ -8,6 +8,7 @@ import {
 } from 'reactstrap';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { Redirect } from 'react-router-dom';
 
 const LOGIN_MUTATION = gql`
     mutation login($email: String!, $password: String!) {
@@ -17,28 +18,28 @@ const LOGIN_MUTATION = gql`
     }
 `;
 
-function Login() {
+function Login(props) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
 
-    const [loginUser, {loading, error, data}] = useMutation(LOGIN_MUTATION, {
+    const [loginUser, { loading, error, data }] = useMutation(LOGIN_MUTATION, {
         onError(error) {
             console.log('Error : ', error)
         },
         onCompleted(data) {
-            console.log('Completed :', data)
+            if (data.login.token) {
+                localStorage.setItem('token', data.login.token)
+                props.history.push('/')
+            }
         }
     });
 
-    if (error) {
-        console.error(error);
-    }
-
-    return(
+    return (
         <Form onSubmit={(e) => {
             e.preventDefault();
-            loginUser({ 
+            loginUser({
                 variables: { email, password }
             });
         }}>
