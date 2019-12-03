@@ -13,6 +13,7 @@ const LOGIN_MUTATION = gql`
     mutation login($email: String!, $password: String!) {
         login(email: $email, password: $password) {
             token
+            error
         }
     }
 `;
@@ -25,12 +26,13 @@ function Login(props) {
     const [loginUser, { loading, error, data }] = useMutation(LOGIN_MUTATION, {
         onError(error) {
             console.log('Error : ', error)
-            alert('Not authorized')
         },
         onCompleted(data) {
             if (data.login.token) {
                 localStorage.setItem('token', data.login.token)
                 props.history.push('/')
+            } else if (data.login.error) {
+                alert(data.login.error)
             }
         }
     });

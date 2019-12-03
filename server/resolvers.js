@@ -10,13 +10,13 @@ module.exports = {
       try {
         const res = await User.findOne({ email: email })
 
-        if (!res) throw new Error('User not found')
+        if (!res) return { error: "User not found" }
 
         const passwordOk = await Bcrypt.compare(password, res.password)
   
-        if (!passwordOk) throw new Error('Wrong password')
+        if (!passwordOk) return { error: "Wrong password" }
         
-        if (res.role !== "ADMIN" && res.role !== "INSTRUCTOR") throw new Error('Not authorized')
+        if (res.role !== "ADMIN" && res.role !== "INSTRUCTOR") return { error: "Not authorized" }
   
         const token = await jwt.sign(
           { role: res.role },

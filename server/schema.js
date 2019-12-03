@@ -11,6 +11,7 @@ module.exports = gql`
 
   type AuthPayload {
     token: String
+    error: String
   }
 
   type User {
