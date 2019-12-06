@@ -3,26 +3,41 @@ import Login from './components/login.js'
 import Home from './components/home.js'
 
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
+import { useQuery } from '@apollo/react-hooks';
 import Cookies from 'js-cookie'
+import gql from 'graphql-tag';
+
+const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
+  }
+`;
+
 
 function App() {
-
+  console.log('app');
+  
+  const { data } = useQuery(IS_LOGGED_IN);
+  console.log({data});
+  
   const PrivateRoute = ({ ...rest }) => {
 
-    const cookie = Cookies.get('token');
-
-    return cookie ?
-    <Route {...rest} />
-    :
-    <Redirect to="/login" />
+    return data.isLoggedIn ? <Route { ...rest } /> : <Redirect to="/login" />;
+    // const cookie = Cookies.get('token');
+    
+    // return cookie ?
+    // <Route {...rest} />
+    // :
+    // <Redirect to="/login" />
   }
   
   const LoginRoute = ({ ...rest }) => {
     
-    return !Cookies.get('token') ?
-    <Route {...rest} />
-    :
-    <Redirect to="/" />
+    return !data.isLoggedIn ? <Route { ...rest } /> : <Redirect to="/" />;
+    // return !Cookies.get('token') ?
+    // <Route {...rest} />
+    // :
+    // <Redirect to="/" />
   }
 
   return (

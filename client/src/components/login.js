@@ -6,7 +6,7 @@ import {
     Input,
     Label
 } from 'reactstrap';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Cookies from 'js-cookie';
 
@@ -15,12 +15,17 @@ const LOGIN_MUTATION = gql`
         login(email: $email, password: $password) {
             token
             error
+            user {
+                id
+                email
+                role
+            }
         }
     }
 `;
 
 function Login(props) {
-
+    const client = useApolloClient();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -28,13 +33,35 @@ function Login(props) {
         onError(error) {
             console.log('Error : ', error)
         },
-        onCompleted(data) {
+        onCompleted(data) {            
             if (data.login.token) {
                 Cookies.set('token', data.login.token, { expires: data.login.tokenExpiration })
+                client.writeData({ data: { isLoggedIn: true }})
+                // console.log('user', data.login.user);
+                
+                // client.writeQuery({ 
+                //     query: LOGIN_MUTATION, 
+                //     data: { 
+                //         // login: { 
+                //             user: { 
+                //                 __typename: "CurrentUser", 
+                //                 id: data.login.user.id, 
+                //                 email: data.login.user.email 
+                //             }
+                //         // } 
+                //     }
+                // })
+
+                // client.writeQuery({query: LOGIN_MUTATION, data: data})
+                client.writeData({ data: { user: data.login.user } })
+                // client.writeData({ query: LOGIN_MUTATION }, { data: {user: data.login.user }})
+                // console.log({client});
+                
                 props.history.push('/')
             } else if (data.login.error) {
                 alert(data.login.error)
-            }
+            } else if(data.login.user) console.log('user', data.login.user);
+            
         }
     });
 
