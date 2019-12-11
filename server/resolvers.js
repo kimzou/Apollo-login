@@ -37,7 +37,7 @@ module.exports = {
         );
 
         // delete res.password;
-        // console.log({res});
+        console.log({res});
         
         return { token: token, user: res };
 

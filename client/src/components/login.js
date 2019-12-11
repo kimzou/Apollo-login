@@ -35,33 +35,20 @@ function Login(props) {
         },
         onCompleted(data) {            
             if (data.login.token) {
+               
                 Cookies.set('token', data.login.token, { expires: data.login.tokenExpiration })
-                client.writeData({ data: { isLoggedIn: true }})
-                // console.log('user', data.login.user);
-                
-                // client.writeQuery({ 
-                //     query: LOGIN_MUTATION, 
-                //     data: { 
-                //         // login: { 
-                //             user: { 
-                //                 __typename: "CurrentUser", 
-                //                 id: data.login.user.id, 
-                //                 email: data.login.user.email 
-                //             }
-                //         // } 
-                //     }
-                // })
+               
+                client.writeData({ data: { isLoggedIn: true } })
+               
+                console.log('user', data.login.user);
 
-                // client.writeQuery({query: LOGIN_MUTATION, data: data})
                 client.writeData({ data: { user: data.login.user } })
-                // client.writeData({ query: LOGIN_MUTATION }, { data: {user: data.login.user }})
-                // console.log({client});
                 
                 props.history.push('/')
+
             } else if (data.login.error) {
                 alert(data.login.error)
-            } else if(data.login.user) console.log('user', data.login.user);
-            
+            } 
         }
     });
 

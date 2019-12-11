@@ -28,9 +28,6 @@ const client = new ApolloClient({
 cache.writeData({
     data: {    
       isLoggedIn: !!Cookies.get('token'),
-      user: {
-          __typename: "User"
-      }
     },
   });
 

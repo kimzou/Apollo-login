@@ -18,26 +18,17 @@ function App() {
   console.log('app');
   
   const { data } = useQuery(IS_LOGGED_IN);
-  console.log({data});
   
   const PrivateRoute = ({ ...rest }) => {
 
     return data.isLoggedIn ? <Route { ...rest } /> : <Redirect to="/login" />;
-    // const cookie = Cookies.get('token');
-    
-    // return cookie ?
-    // <Route {...rest} />
-    // :
-    // <Redirect to="/login" />
+
   }
   
   const LoginRoute = ({ ...rest }) => {
     
     return !data.isLoggedIn ? <Route { ...rest } /> : <Redirect to="/" />;
-    // return !Cookies.get('token') ?
-    // <Route {...rest} />
-    // :
-    // <Redirect to="/" />
+
   }
 
   return (
@@ -45,7 +36,7 @@ function App() {
       <Switch>
         <PrivateRoute path="/" component={Home} exact />
         <LoginRoute path="/login" component={Login} exact />
-        <Redirect from="*" to="/" />
+        {/* <Redirect from="*" to="/" /> */}
       </Switch>
     </BrowserRouter>
   );
