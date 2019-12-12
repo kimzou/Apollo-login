@@ -15,11 +15,6 @@ const LOGIN_MUTATION = gql`
         login(email: $email, password: $password) {
             token
             error
-            user {
-                id
-                email
-                role
-            }
         }
     }
 `;
@@ -34,15 +29,12 @@ function Login(props) {
             console.log('Error : ', error)
         },
         onCompleted(data) {            
+            
             if (data.login.token) {
                
                 Cookies.set('token', data.login.token, { expires: data.login.tokenExpiration })
                
                 client.writeData({ data: { isLoggedIn: true } })
-               
-                console.log('user', data.login.user);
-
-                client.writeData({ data: { user: data.login.user } })
                 
                 props.history.push('/')
 

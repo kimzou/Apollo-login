@@ -4,7 +4,6 @@ import Home from './components/home.js'
 
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks';
-import Cookies from 'js-cookie'
 import gql from 'graphql-tag';
 
 const IS_LOGGED_IN = gql`
@@ -36,7 +35,7 @@ function App() {
       <Switch>
         <PrivateRoute path="/" component={Home} exact />
         <LoginRoute path="/login" component={Login} exact />
-        {/* <Redirect from="*" to="/" /> */}
+        <Redirect from="*" to="/" />
       </Switch>
     </BrowserRouter>
   );
